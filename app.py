@@ -39,7 +39,7 @@ def login():
 		cursor = conexao.cursor(dictionary=True)
 
 		try:
-			cursor.execute("SELECT * FROM Professor WHERE CPF = %s", (cpf,))
+			cursor.execute("SELECT * FROM professor WHERE CPF = %s", (cpf,))
 			professor = cursor.fetchone()
 			print("🎯 Resultado da consulta:", professor)
 		except mysql.connector.Error as err:
@@ -68,10 +68,10 @@ def dashboard():
 	conexao = get_conexao()
 	cursor = conexao.cursor(dictionary=True)
 
-	cursor.execute("SELECT * FROM Professor WHERE CPF = %s", (cpf,))
+	cursor.execute("SELECT * FROM professor WHERE CPF = %s", (cpf,))
 	professor = cursor.fetchone()
 
-	cursor.execute("SELECT * FROM Turma WHERE cpf_prof = %s", (cpf,))
+	cursor.execute("SELECT * FROM turma WHERE cpf_prof = %s", (cpf,))
 	turmas = cursor.fetchall()
 
 	cursor.close()
@@ -89,7 +89,7 @@ def turmas():
 	conexao = get_conexao()
 	cursor = conexao.cursor(dictionary=True)
 
-	cursor.execute("SELECT * FROM Turma WHERE cpf_prof = %s", (cpf,))
+	cursor.execute("SELECT * FROM turma WHERE cpf_prof = %s", (cpf,))
 	turmas = cursor.fetchall()
 
 	cursor.close()
@@ -108,10 +108,10 @@ def alunos(serie_ano):
 
 	if request.method == 'POST':
 		for aluno_id, nota in request.form.items():
-			cursor.execute("UPDATE Alunos SET nota = %s WHERE id = %s", (nota, aluno_id))
+			cursor.execute("UPDATE alunos SET nota = %s WHERE id = %s", (nota, aluno_id))
 		conexao.commit()
 
-	cursor.execute("SELECT * FROM Alunos WHERE ano_serie = %s", (serie_ano,))
+	cursor.execute("SELECT * FROM alunos WHERE ano_serie = %s", (serie_ano,))
 	alunos = cursor.fetchall()
 
 	cursor.close()
