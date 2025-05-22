@@ -1,4 +1,6 @@
 # Imports
+import os
+
 from flask import Flask, render_template, request, redirect, url_for, session
 import mysql.connector
 
@@ -9,11 +11,10 @@ app.secret_key = 'sua_chave_secreta_aqui'  # Troque por uma chave segura
 # Função para conectar ao banco
 def get_conexao():
     return mysql.connector.connect(
-        host='escola2025-db.c1se6o6c0h5b.us-east-2.rds.amazonaws.com',
-        user='admin',
-        password='Galler1220!',
-        database='escola2025',
-		port=3306
+        host=os.getenv("DB_HOST"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        database=os.getenv("DB_NAME")
     )
 
 # Rota: Login (GET e POST)
