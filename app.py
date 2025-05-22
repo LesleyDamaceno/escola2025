@@ -132,4 +132,4 @@ if __name__ == '__main__':
     except mysql.connector.Error as erro:
         print("❌ Erro ao conectar:", erro)
 
-    app.run(debug=True)
+    app.run(debug=False)
