@@ -1,0 +1,130 @@
+# Imports
+from flask import Flask, render_template, request, redirect, url_for, session
+import mysql.connector
+
+# Inicializa o Flask
+app = Flask(__name__)
+app.secret_key = 'sua_chave_secreta_aqui'  # Troque por uma chave segura
+
+# Função para conectar ao banco
+def get_conexao():
+    return mysql.connector.connect(
+        host='escola2025-db.c1se6o6c0h5b.us-east-2.rds.amazonaws.com',
+        user='admin',
+        password='Galler1220!',
+        database='escola2025',
+		port=3306
+    )
+
+# Rota: Login (GET e POST)
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        cpf_raw = request.form['cpf'].strip()
+        cpf_numbers = ''.join(filter(str.isdigit, cpf_raw))
+        if len(cpf_numbers) == 11:
+            cpf = cpf_numbers[:9] + '-' + cpf_numbers[9:]
+        else:
+            cpf = cpf_raw
+
+        conexao = get_conexao()
+        cursor = conexao.cursor(dictionary=True)
+
+        try:
+            cursor.execute("SELECT * FROM Professor WHERE CPF = %s", (cpf,))
+            professor = cursor.fetchone()
+        except mysql.connector.Error as err:
+            cursor.close()
+            conexao.close()
+            return render_template('login.html', erro=f"Erro no banco: {err}")
+
+        cursor.close()
+        conexao.close()
+
+        if professor:
+            session['cpf'] = professor['cpf']
+            return redirect(url_for('dashboard'))
+        else:
+            return render_template('login.html', erro="CPF não encontrado")
+
+    return render_template('login.html')
+
+# Rota: Dashboard (dados do professor + turmas)
+@app.route('/dashboard')
+def dashboard():
+    if 'cpf' not in session:
+        return redirect(url_for('login'))
+
+    cpf = session['cpf']
+    conexao = get_conexao()
+    cursor = conexao.cursor(dictionary=True)
+
+    cursor.execute("SELECT * FROM Professor WHERE CPF = %s", (cpf,))
+    professor = cursor.fetchone()
+
+    cursor.execute("SELECT * FROM Turma WHERE cpf_prof = %s", (cpf,))
+    turmas = cursor.fetchall()
+
+    cursor.close()
+    conexao.close()
+
+    return render_template('dashboard.html', professor=professor, turmas=turmas)
+
+# Rota: Visualizar turmas
+@app.route('/turmas')
+def turmas():
+    if 'cpf' not in session:
+        return redirect(url_for('login'))
+
+    cpf = session['cpf']
+    conexao = get_conexao()
+    cursor = conexao.cursor(dictionary=True)
+
+    cursor.execute("SELECT * FROM Turma WHERE cpf_prof = %s", (cpf,))
+    turmas = cursor.fetchall()
+
+    cursor.close()
+    conexao.close()
+
+    return render_template('turmas.html', turmas=turmas)
+
+# Rota: Ver e editar notas dos alunos da turma
+@app.route('/turmas/<serie_ano>/alunos', methods=['GET', 'POST'])
+def alunos(serie_ano):
+    if 'cpf' not in session:
+        return redirect(url_for('login'))
+
+    conexao = get_conexao()
+    cursor = conexao.cursor(dictionary=True)
+
+    if request.method == 'POST':
+        for aluno_id, nota in request.form.items():
+            cursor.execute("UPDATE Alunos SET nota = %s WHERE id = %s", (nota, aluno_id))
+        conexao.commit()
+
+    cursor.execute("SELECT * FROM Alunos WHERE ano_serie = %s", (serie_ano,))
+    alunos = cursor.fetchall()
+
+    cursor.close()
+    conexao.close()
+
+    return render_template('editar_notas.html', alunos=alunos, serie_ano=serie_ano)
+
+# Rota: Logout
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('login'))
+
+# Inicia o servidor Flask
+if __name__ == '__main__':
+    # Teste de conexão
+    try:
+        conexao = get_conexao()
+        if conexao.is_connected():
+            print("✅ Conexão realizada com sucesso!")
+        conexao.close()
+    except mysql.connector.Error as erro:
+        print("❌ Erro ao conectar:", erro)
+
+    app.run(debug=True)

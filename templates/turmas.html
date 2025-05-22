@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block title %}Turmas{% endblock %}
+
+{% block content %}
+    <h1>Minhas Turmas</h1>
+    <table border="1">
+        <tr>
+            <th>Série/Ano</th>
+            <th>Disciplina</th>
+            <th>Número de alunos</th>
+            <th>Ações</th>
+        </tr>
+        {% for turma in turmas %}
+        <tr>
+            <td>{{ turma.serie_ano }}</td>
+            <td>{{ turma.disciplina }}</td>
+            <td>{{ turma.num_alunos }}</td>
+            <td><a href="{{ url_for('alunos', serie_ano=turma.serie_ano) }}">Ver Alunos</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <a href="{{ url_for('dashboard') }}">Voltar ao Dashboard</a>
+{% endblock %}
+

@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block title %}Alunos da Turma {{ serie_ano }}{% endblock %}
+
+{% block content %}
+    <h1>Alunos da Turma {{ serie_ano }}</h1>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Matricula</th>
+            <th>Nome</th>
+            <th>Data Nasc.</th>
+            <th>Nota</th>
+        </tr>
+        {% for aluno in alunos %}
+        <tr>
+            <td>{{ aluno.id }}</td>
+            <td>{{ aluno.matricula }}</td>
+            <td>{{ aluno.nome }}</td>
+            <td>{{ aluno.data_nasc }}</td>
+            <td>{{ aluno.nota }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <a href="{{ url_for('turmas') }}">Voltar às Turmas</a>
+{% endblock %}
+

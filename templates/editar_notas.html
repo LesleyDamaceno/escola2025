@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block title %}Editar Notas - Turma {{ serie_ano }}{% endblock %}
+
+{% block content %}
+    <h1>Editar Notas - Turma {{ serie_ano }}</h1>
+    <form method="POST">
+        <table border="1">
+            <tr>
+                <th>Nome</th>
+                <th>Matricula</th>
+                <th>Nota</th>
+            </tr>
+            {% for aluno in alunos %}
+            <tr>
+                <td>{{ aluno.nome }}</td>
+                <td>{{ aluno.matricula }}</td>
+                <td>
+                    <input type="text" name="{{ aluno.id }}" value="{{ aluno.nota or '' }}">
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <button type="submit">Salvar Notas</button>
+    </form>
+    <a href="{{ url_for('dashboard') }}">Voltar ao Dashboard</a>
+{% endblock %}
+

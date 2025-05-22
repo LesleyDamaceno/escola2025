@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block title %}Dashboard do Professor{% endblock %}
+
+{% block content %}
+<!-- Conteúdo específico do dashboard vai aqui -->
+
+<h2>Olá, {{ professor.nome }}!</h2>
+<p><strong>CPF:</strong> {{ professor.CPF }}</p>
+<p><strong>Escola:</strong> {{ professor.escola }}</p>
+<p><strong>Cargo:</strong> {{ professor.cargo }}</p>
+<p><strong>Data de Início:</strong> {{ professor.data_inicio }}</p>
+<p><strong>E-mail:</strong> {{ professor.email }}</p>
+
+<h3>Suas Turmas:</h3>
+<ul>
+    {% for turma in turmas %}
+        <li>
+            {{ turma.serie_ano }} - {{ turma.disciplina }}
+            (<a href="{{ url_for('alunos', serie_ano=turma.serie_ano) }}">Ver alunos</a>)
+        </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
