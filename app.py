@@ -120,16 +120,3 @@ def alunos(serie_ano):
 def logout():
     session.clear()
     return redirect(url_for('login'))
-
-# Inicia o servidor Flask
-if __name__ == '__main__':
-    # Teste de conexão
-    try:
-        conexao = get_conexao()
-        if conexao.is_connected():
-            print("✅ Conexão realizada com sucesso!")
-        conexao.close()
-    except mysql.connector.Error as erro:
-        print("❌ Erro ao conectar:", erro)
-
-    app.run(debug=False)
