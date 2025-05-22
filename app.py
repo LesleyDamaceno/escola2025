@@ -8,6 +8,10 @@ import mysql.connector
 app = Flask(__name__)
 app.secret_key = 'sua_chave_secreta_aqui'  # Troque por uma chave segura
 
+@app.route('/')
+def home():
+    return redirect(url_for('login'))
+
 # Função para conectar ao banco
 def get_conexao():
     return mysql.connector.connect(
