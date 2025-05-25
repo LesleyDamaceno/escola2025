@@ -6,7 +6,7 @@ import mysql.connector
 
 # Inicializa o Flask
 app = Flask(__name__)
-app.secret_key = 'Galler1220!'  # Troque por uma chave segura
+app.secret_key = ''  # Troque por uma chave segura
 
 @app.route('/')
 def home():
